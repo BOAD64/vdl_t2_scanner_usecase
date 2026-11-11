@@ -6,10 +6,11 @@ readme = "README.md"
 authors = [
     { name = "BOAD64", email = "71528364+BOAD64@users.noreply.github.com" }
 ]
-requires-python = "==3.14.*"
+requires-python = "==3.12.*"
 dependencies = [
     "boosteros",
 ]
+
 
 [project.scripts]
 vdl-t2-scanner-usecase = "vdl_t2_scanner_usecase:main"
