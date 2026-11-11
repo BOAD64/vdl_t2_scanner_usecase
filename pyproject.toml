@@ -1,0 +1,19 @@
+[project]
+name = "vdl-t2-scanner-usecase"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "BOAD64", email = "71528364+BOAD64@users.noreply.github.com" }
+]
+requires-python = "==3.14.*"
+dependencies = [
+    "boosteros",
+]
+
+[project.scripts]
+vdl-t2-scanner-usecase = "vdl_t2_scanner_usecase:main"
+
+[build-system]
+requires = ["uv_build>=0.13.0,<0.14.0"]
+build-backend = "uv_build"
