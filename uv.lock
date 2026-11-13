@@ -124,7 +124,11 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "boosteros" },
+    { name = "opencv-python" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "boosteros" }]
+requires-dist = [
+    { name = "boosteros" },
+    { name = "opencv-python" },
+]
