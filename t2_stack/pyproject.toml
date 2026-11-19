@@ -1,5 +1,5 @@
 [project]
-name = "vdl-t2-scanner-usecase"
+name = "t2-stack"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -14,7 +14,7 @@ dependencies = [
 
 
 [project.scripts]
-vdl-t2-scanner-usecase = "vdl_t2_scanner_usecase:main"
+t2-stack = "t2_stack:main"
 
 [build-system]
 requires = ["uv_build>=0.13.0,<0.14.0"]
