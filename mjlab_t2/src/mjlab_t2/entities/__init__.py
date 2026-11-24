@@ -1,0 +1,1 @@
+# when adding more robots or items, switch file structure from entities/ to enviroment/ and robots/

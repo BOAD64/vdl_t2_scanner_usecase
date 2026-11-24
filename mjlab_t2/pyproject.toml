@@ -1,0 +1,21 @@
+[project]
+name = "mjlab-t2"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "BOAD64", email = "71528364+BOAD64@users.noreply.github.com" }
+]
+
+# 24-11-2026: pinned to 3.14 because mjlab==1.6.1 could not build mujoco==3.11.0 on python==3.15
+requires-python = "==3.14.*" 
+dependencies = [
+    "mjlab>=1.6.1",
+]
+
+[project.scripts]
+mjlab-t2 = "mjlab_t2:main"
+
+[build-system]
+requires = ["uv_build>=0.13.0,<0.14.0"]
+build-backend = "uv_build"

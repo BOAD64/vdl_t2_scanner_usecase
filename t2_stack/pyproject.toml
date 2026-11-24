@@ -12,7 +12,6 @@ dependencies = [
     "opencv-python",
 ]
 
-
 [project.scripts]
 t2-stack = "t2_stack:main"
 

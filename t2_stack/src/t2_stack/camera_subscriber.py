@@ -1,6 +1,8 @@
 import cv2
+from cv2.typing import MatLike, Point2f
 import numpy as np
 import rclpy
+from cv2 import aruco
 
 from cv2 import Mat
 from numpy.typing import NDArray
@@ -10,11 +12,15 @@ from sensor_msgs.msg import Image
 from sensor_msgs.msg import CompressedImage
 
 
-# TOPIC = '/boostercamera/head/combine/rgb'
-TOPIC = '/booster_video_stream'
+TOPIC = '/boostercamera/head/combine/rgb' # both eyes ontop of eachother
+# TOPIC = '/boostercamera/head/rgb' # left eye
+# TOPIC = '/booster_video_stream'
 FPS = 30
+MARKER_IDS: list[int] = [23, 56, 73]
+SIZE = 1
 
 class MinimalSubscriber(Node):
+
     def __init__(self):
         super().__init__('camera_subscriber')
 
@@ -35,6 +41,15 @@ class MinimalSubscriber(Node):
         self.processed_image: Image | CompressedImage | None = None
         self.timer = self.create_timer(1.0/FPS, self.timer_callback)
 
+        self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_100)
+        self.detector_params = aruco.DetectorParameters()
+        for id in MARKER_IDS:
+            marker_image = aruco.generateImageMarker(dictionary=self.aruco_dict, id=id, sidePixels=200, borderBits=1)
+            marker_image = cv2.copyMakeBorder(marker_image, 50, 50, 50, 50, cv2.BORDER_CONSTANT, value=(255,))
+            cv2.imwrite(f"marker{id}.png", marker_image)
+        
+            
+
 
     def listener_callback(self, msg: Image | CompressedImage):
         if self.latest_img_msg == None : print("---received!---")
@@ -53,14 +68,21 @@ class MinimalSubscriber(Node):
             img_msg = self.latest_img_msg
             cv_img = self.process_compressed_image(img_msg)
 
-        if cv_img is not None:
-            cv2.imshow(TOPIC, cv_img)
-            cv2.waitKey(1)
-        else:
+        if cv_img is None:
             print("could not process image")
+            return
+
+        detector = aruco.ArucoDetector(self.aruco_dict, self.detector_params)
+        marker_corners, marker_ids, rejected_candidates = detector.detectMarkers(cv_img)
+        output_img = aruco.drawDetectedMarkers(image=cv_img, corners=marker_corners, ids=marker_ids)
+
+        output_img = cv2.resize(src=output_img,dsize=None, fx=SIZE, fy=SIZE)
+        cv2.imshow(TOPIC, output_img)
+        cv2.waitKey(1)
 
 
-    def process_image(self, img_msg: Image):
+
+    def process_image(self, img_msg: Image) -> MatLike:
         print("---processing---")
         print(f"frame_id: {img_msg.header.frame_id}")
         print(f"encoding: {img_msg.encoding}")
@@ -72,7 +94,7 @@ class MinimalSubscriber(Node):
         return cv2.cvtColor(yuv_img, cv2.COLOR_YUV2BGR_NV12)
 
 
-    def process_compressed_image(self, img_msg: CompressedImage):
+    def process_compressed_image(self, img_msg: CompressedImage) -> MatLike | None:
         print("---processing---")
         print(f"frame_id: {img_msg.header.frame_id}")
         print(f"format: {img_msg.format}")
